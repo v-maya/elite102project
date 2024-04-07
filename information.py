@@ -3,22 +3,42 @@
 import mysql.connector
 from datetime import datetime
 
-db = mysql.connector.connect(
+connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="h3110$iMn",
-    database="testdatabase"
+    password="h3110$iMn",
+    database="banking"
     )
 
-mycursor = db.cursor()
+def create_account():
+    cursor = connection.cursor()
+    name = input("Enter your name: ")
+    username = input("Create a username: ")
+    password = input("Create a password: ")
+    email = input("Enter your email: ")
+    values = (name, username, password, email)
+    add_data = ("INSERT INTO user_table (name, username, password, email) VALUES (%s, %s, %s, %s)")
 
-#mycursor.execute("CREATE TABLE Test (name varchar(50) NOT NULL, created datetime NOT NULL, gender ENUM('M', 'F', 'O') NOT NULL, id int PRIMARY KEY NOT NULL AUTO_INCREMENT)")
-#mycursor.execute("INSERT INTO Test (name, created, gender) VALUES (%s, %s, %s)", ("JOEY", datetime.now(), "F"))
+    cursor.execute(add_data, values)
+    connection.commit()
 
-#mycursor.execute("ALTER TABLE Test ADD COLUMN food VARCHAR(50) NOT NULL")
+    print(cursor.rowcount, "record inserted.")
 
-mycursor.execute("ALTER TABLE Test CHANGE first_name first_name VARCHAR(4)")
+    cursor.close()
+    connection.close()
 
-mycursor.execute("DESCRIBE Test")
-for x in mycursor:
-    print(x)
+def check_balance():
+    pass
+
+def deposit():
+    pass
+
+def withdraw():
+    pass
+
+def modify_account():
+    pass
+
+def delete_account():
+    pass
+

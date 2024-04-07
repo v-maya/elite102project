@@ -5,6 +5,7 @@ Future plan: move all functions into functions.py
 main.py for test cases
 information.py for data handling
 '''
+import information as info
 # Display and select action
 def menu():
     print("\
@@ -19,7 +20,7 @@ def menu():
     option = int(input("What would you like to do? "))
     match option:
         case 1:
-            print("Create account")
+            info.create_account()
         case 2:
             print("Check balance")
         case 3:
