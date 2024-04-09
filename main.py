@@ -9,10 +9,11 @@ import information as info
 
 # This ID verifies who is logged in and who can access what data. Set to -1 on start to avoid accessing accounts
 # without logging in.
-log_in_ID = -1
+log_in_ID = [-1] 
 
 # Display and select action
 def menu():
+    global log_in_ID
     print("\
            ----- Menu -----\n\
            1. Create account\n\
@@ -22,14 +23,21 @@ def menu():
            5. Withdraw\n\
            6. Modify account\n\
            7. Delete account\n\
+           8. Quit\
           ")
-    option = int(input("What would you like to do? "))
+    try:
+        option = int(input("What would you like to do? "))
+    except ValueError:
+        print("Invalid input. Please enter an integer.")
+        option = int(input("What would you like to do? "))
+    global log_in_ID
+    #print("Current ID: " + str(log_in_ID))
     match option:
         case 1:
             info.create_account()
         case 2:
-            global log_in_ID
             log_in_ID = info.log_in()
+            print(log_in_ID)
         case 3:
             print("Deposit")
         case 4:
@@ -40,8 +48,10 @@ def menu():
             info.modify_account(log_in_ID)
         case 7:
             info.delete_account(log_in_ID)
+        case 8:
+            quit()
         case _:
-            print("Whoops!")
+            print("Whoops! Please enter a valid option number.")
 
 # Welcome message for users
 def welcome():
