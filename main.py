@@ -25,11 +25,13 @@ def menu():
            7. Delete account\n\
            8. Quit\
           ")
+    
     try:
         option = int(input("What would you like to do? "))
     except ValueError:
         print("Invalid input. Please enter an integer.")
         option = int(input("What would you like to do? "))
+
     global log_in_ID
     #print("Current ID: " + str(log_in_ID))
     match option:
@@ -37,9 +39,9 @@ def menu():
             info.create_account()
         case 2:
             log_in_ID = info.log_in()
-            print(log_in_ID)
+            #print(log_in_ID)
         case 3:
-            print("Deposit")
+            info.check_balance(log_in_ID)
         case 4:
             print("Withdraw")
         case 5:
@@ -56,8 +58,10 @@ def menu():
 # Welcome message for users
 def welcome():
     print("Hello! Welcome to the banking app.")
+    # Already has a quit statement within menu()
     while True:
         menu()
 
+# Main program
 welcome()
-print(log_in_ID)
+#print(log_in_ID)
