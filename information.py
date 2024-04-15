@@ -25,7 +25,6 @@ def create_account():
     connection.commit()
     print(cursor.rowcount, "record inserted.")
     cursor.close()
-    connection.close()
 
 # User types in their username and password and the function retrieves the corresponding ID to be used
 # in checking and making transactions.
@@ -50,12 +49,11 @@ def log_in():
             print(list)
             return list
     cursor.close()
-    connection.close()
-    #return myresult
 
 # User checks their current balance expressed as a decimal in the form of 0.00.
 # This function is currently working.
 def check_balance(user_id):
+    cursor = connection.cursor(buffered=True)
     while user_id == [-1]:
         print("Whoops! Please log in first.")
         user_id = log_in()
@@ -65,19 +63,21 @@ def check_balance(user_id):
     cursor.execute(check_data, value)
     print(cursor.rowcount, "record found.")
     myresult = cursor.fetchone()
-    for x in myresult:
-        print(x)
+    if myresult != None:
+        print("Your current account balance is $" + str(myresult[0]))
+    #for x in myresult:
+    #    print(x)
     connection.commit()
     cursor.close()
-    connection.close()
 
 # Using another table, meant to track deposits that the user makes. Automatically updates user balance.
 # May want to update function such that only data from the tables is being used rather than the pure user input.
 # Reason why transaction data is stored on another table is so the user can check their transaction history
 # in part to the usage of a foreign uid key.
-# This function is currently not tested.
+# This function is currently working. NOT USING FOREIGN KEY
 def deposit(user_id):
-    while user_id == -1:
+    cursor = connection.cursor(buffered=True)
+    while user_id == [-1]:
         print("Whoops! Please log in first.")
         user_id = log_in()
     try:
@@ -85,34 +85,33 @@ def deposit(user_id):
     except ValueError:
         print("Whoops! Please enter a decimal number.")
         amount = float(input("How much would you like to deposit? "))
-    cursor = connection.cursor()
+    value = user_id
 
-    #uid = ("INSERT INTO transaction_table (uid) VALUES (%s)")
-    #cursor.execute(uid, user_id)
-
-    deposit_money = ("INSERT INTO transaction_table (amount) VALUES (%s)")
-    cursor.execute(deposit_money, amount)
-
-    get_money = ("SELECT BALANCE FROM user_table WHERE id=%s")
-    cursor.execute(get_money, user_id)
-
+    get_balance = ("SELECT BALANCE FROM user_table WHERE id=%s")
+    cursor.execute(get_balance, value)
     myresult = cursor.fetchone()
-    myresult += amount
-    add_money = ("INSERT INTO user_table (balance) VALUES (%s)")
-    cursor.execute(add_money, myresult)
+    smyresult = str(myresult[0])
+    smyresult = float(smyresult)
 
+    newresult = smyresult + amount
+    snewresult = str(newresult)
+    user_id = str(user_id[0])
+
+    query = ("UPDATE user_table SET BALANCE = %s WHERE id=%s")
+    cursor.execute(query, (snewresult, user_id))
+    
     connection.commit()
     print(cursor.rowcount, "records changed.")
     cursor.close()
-    connection.close()
 
 # Using another table, meant to track withdrawals that the user makes. Automatically updates user balance.
 # May want to update function such that only data from the tables is being used rather than the pure user input.
 # Reason why transaction data is stored on another table is so the user can check their transaction history
 # in part to the usage of a foreign uid key.
-# This function is currently not tested. DOES NOT ACCOUNT FOR SUFFICIENT FUNDS.
+# This function is currently working. NOT USING FOREUGN KEY
 def withdraw(user_id):
-    while user_id == -1:
+    cursor = connection.cursor(buffered=True)
+    while user_id == [-1]:
         print("Whoops! Please log in first.")
         user_id = log_in()
     try:
@@ -120,26 +119,28 @@ def withdraw(user_id):
     except ValueError:
         print("Whoops! Please enter a decimal number.")
         amount = float(input("How much would you like to withdraw? "))
-    cursor = connection.cursor()
+    value = user_id
 
-    #uid = ("INSERT INTO transaction_table (uid) VALUES (%s)")
-    #cursor.execute(uid, user_id)
-
-    withdrawal_money = ("INSERT INTO transaction_table (amount) VALUES (%s)")
-    cursor.execute(withdrawal_money, amount)
-
-    get_money = ("SELECT BALANCE FROM user_table WHERE id=%s")
-    cursor.execute(get_money, user_id)
-
+    get_balance = ("SELECT BALANCE FROM user_table WHERE id=%s")
+    cursor.execute(get_balance, value)
     myresult = cursor.fetchone()
-    myresult -= amount
-    add_money = ("INSERT INTO user_table (balance) VALUES (%s)")
-    cursor.execute(add_money, myresult)
+    smyresult = str(myresult[0])
+    smyresult = float(smyresult)
+
+    newresult = smyresult - amount
+    if newresult < 0:
+        print("Insufficient funds!")
+        return
+
+    snewresult = str(newresult)
+    user_id = str(user_id[0])
+
+    query = ("UPDATE user_table SET BALANCE = %s WHERE id=%s")
+    cursor.execute(query, (snewresult, user_id))
 
     connection.commit()
     print(cursor.rowcount, "records changed.")
     cursor.close()
-    connection.close()
 
 # User enters in new data to update their existing account. User ID is needed to verify identity.
 # This function is currently working. user_id is converted to an integer within the function.
@@ -161,7 +162,6 @@ def modify_account(user_id):
     connection.commit()
     print(cursor.rowcount, "record changed.")
     cursor.close()
-    connection.close()
 
 # Once logged in, the user will be able to delete their own account. However, the function should also work
 # if the user chooses to log in upon start up.
@@ -177,5 +177,3 @@ def delete_account(user_id):
     connection.commit()
     print(cursor.rowcount, "record deleted.")
     cursor.close()
-    connection.close()
-

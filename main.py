@@ -33,24 +33,23 @@ def menu():
         option = int(input("What would you like to do? "))
 
     global log_in_ID
-    #print("Current ID: " + str(log_in_ID))
     match option:
         case 1:
             info.create_account()
         case 2:
             log_in_ID = info.log_in()
-            #print(log_in_ID)
         case 3:
             info.check_balance(log_in_ID)
         case 4:
-            print("Withdraw")
+            info.deposit(log_in_ID)
         case 5:
-            print("Modify account")
+            info.withdraw(log_in_ID)
         case 6:
             info.modify_account(log_in_ID)
         case 7:
             info.delete_account(log_in_ID)
         case 8:
+            info.connection.close()
             quit()
         case _:
             print("Whoops! Please enter a valid option number.")
@@ -64,4 +63,5 @@ def welcome():
 
 # Main program
 welcome()
-#print(log_in_ID)
+
+# TEST CASES?
