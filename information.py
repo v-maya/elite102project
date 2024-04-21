@@ -34,6 +34,7 @@ def log_in():
     def btn_func():
         cursor = connection.cursor(buffered=True)
         values = (enter_user.get(), enter_pw.get())
+        status_update['text'] = "Logged in! You may close out this window"
         sql = ("SELECT ID FROM user_table WHERE username=%s AND password=%s")
         cursor.execute(sql, values)
         connection.commit()
@@ -62,6 +63,8 @@ def log_in():
     enter_pw.pack()
     submit = tk.Button(master=login_window, text="Submit", command=lambda:btn_func())
     submit.pack()
+    status_update = tk.Label(master=login_window, text="Logging in...")
+    status_update.pack()
 
     #cursor = connection.cursor(buffered=True)
     #username = input("Enter your username: ")
@@ -95,6 +98,7 @@ def check_balance(user_id):
         print("Whoops! Please log in first.")
         user_id = log_in()
         continue
+    print("This is running now.")
     cursor = connection.cursor()
     value = user_id
     check_data = ("SELECT BALANCE FROM user_table WHERE id=%s")
