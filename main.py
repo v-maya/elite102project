@@ -4,6 +4,8 @@ Contains main functions of app
 Future plan: move all functions into functions.py
 main.py for test cases
 information.py for data handling
+
+make a separate file for unit testing after creating the UI
 '''
 import information as info
 
@@ -63,5 +65,3 @@ def welcome():
 
 # Main program
 welcome()
-
-# TEST CASES?

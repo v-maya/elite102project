@@ -1,7 +1,7 @@
 #all python functions for main
 
 import mysql.connector
-#from datetime import datetime
+import tkinter as tk
 
 connection = mysql.connector.connect(
     host="localhost",
@@ -30,25 +30,62 @@ def create_account():
 # in checking and making transactions.
 # This function is currently working. Returns the user ID as a list.
 def log_in():
-    cursor = connection.cursor(buffered=True)
-    username = input("Enter your username: ")
-    password = input("Enter your password: ")
-    values = (username, password)
-    sql = ("SELECT ID FROM user_table WHERE username=%s AND password=%s")
-    cursor.execute(sql, values)
-    connection.commit()
-    myresult = cursor.fetchone()
-    list = []
-    if myresult is None:
-        print("Incorrect credentials. Try again!")
-        return -1
-    for x in myresult:
-        if isinstance(x, int):
-            print("Logged in!")
-            list.append(x)
-            print(list)
-            return list
-    cursor.close()
+
+    def btn_func():
+        cursor = connection.cursor(buffered=True)
+        values = (enter_user.get(), enter_pw.get())
+        sql = ("SELECT ID FROM user_table WHERE username=%s AND password=%s")
+        cursor.execute(sql, values)
+        connection.commit()
+        myresult = cursor.fetchone()
+        list = []
+        if myresult is None:
+            print("Incorrect credentials. Try again!")
+            return [-1]
+        for x in myresult:
+            if isinstance(x, int):
+                print("Logged in!")
+                list.append(x)
+                print(list)
+                return list
+        cursor.close()
+    
+    login_window = tk.Toplevel()
+    login_window.title("Log In")
+    user_label = tk.Label(master=login_window, text="Enter your username")
+    user_label.pack()
+    enter_user = tk.Entry(master=login_window)
+    enter_user.pack()
+    pw_label = tk.Label(master=login_window, text="Enter your password")
+    pw_label.pack()
+    enter_pw = tk.Entry(master=login_window)
+    enter_pw.pack()
+    submit = tk.Button(master=login_window, text="Submit", command=lambda:btn_func())
+    submit.pack()
+
+    #cursor = connection.cursor(buffered=True)
+    #username = input("Enter your username: ")
+    #password = input("Enter your password: ")
+    #values = (username, password)
+    #print("This part is running now")
+    #for item in values:
+    #    print("Values are: " + item)
+    login_window.mainloop()
+    #sql = ("SELECT ID FROM user_table WHERE username=%s AND password=%s")
+    #cursor.execute(sql, values)
+    #connection.commit()
+    #myresult = cursor.fetchone()
+    #list = []
+    #if myresult is None:
+    #    print("Incorrect credentials. Try again!")
+    #    return [-1]
+    #for x in myresult:
+    #    if isinstance(x, int):
+    #        print("Logged in!")
+    #        list.append(x)
+    #        print(list)
+    #        return list
+    #cursor.close()
 
 # User checks their current balance expressed as a decimal in the form of 0.00.
 # This function is currently working.
@@ -57,6 +94,7 @@ def check_balance(user_id):
     while user_id == [-1]:
         print("Whoops! Please log in first.")
         user_id = log_in()
+        continue
     cursor = connection.cursor()
     value = user_id
     check_data = ("SELECT BALANCE FROM user_table WHERE id=%s")
