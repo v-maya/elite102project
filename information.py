@@ -31,7 +31,7 @@ def create_account():
 # This function is currently working. Returns the user ID as a list.
 def log_in():
     """
-    The following tkinter code is commented out since it did not function as intended.
+    -- The following tkinter code is commented out since it did not function as intended.
 
     def btn_func():
         cursor = connection.cursor(buffered=True)
@@ -82,7 +82,7 @@ def log_in():
     connection.commit()
     myresult = cursor.fetchone()
     list = []
-    if myresult is None:
+    if myresult is None: # if nothing is there meaning there doesn't exist a username or password
         print("Incorrect credentials. Try again!")
         return [-1]
     for x in myresult:
@@ -142,12 +142,14 @@ def deposit(user_id):
 
     get_balance = ("SELECT BALANCE FROM user_table WHERE id=%s")
     cursor.execute(get_balance, value)
+
+    # Following enables balance to be modified
     myresult = cursor.fetchone()
     smyresult = str(myresult[0])
     smyresult = float(smyresult)
-
     newresult = smyresult + amount
     snewresult = str(newresult)
+
     user_id = user_id[0] # could be optimized
 
     query = ("UPDATE user_table SET BALANCE = %s WHERE id=%s")
@@ -180,16 +182,17 @@ def withdraw(user_id):
 
     get_balance = ("SELECT BALANCE FROM user_table WHERE id=%s")
     cursor.execute(get_balance, value)
+
+    # Following enables balance to be modified
     myresult = cursor.fetchone()
     smyresult = str(myresult[0])
     smyresult = float(smyresult)
-
     newresult = smyresult - amount
     if newresult < 0:
         print("Insufficient funds!")
         return
-
     snewresult = str(newresult)
+
     user_id = user_id[0] # could be optimized
 
     query = ("UPDATE user_table SET BALANCE = %s WHERE id=%s")
