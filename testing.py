@@ -7,6 +7,7 @@ import unittest
 
 class TestFunctions(unittest.TestCase):
 
+    # tests whether the log_in function returns a value (the user_id)
     def test_log_in(self):
         self.assertIsNotNone(info.log_in(), True)
 
