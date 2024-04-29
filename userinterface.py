@@ -1,3 +1,6 @@
+"""
+Run this file to see some UI with tkinter. Normal CLI functions work.
+"""
 import information as info
 import tkinter as tk
 
