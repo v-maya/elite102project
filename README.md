@@ -1,2 +1,9 @@
 # elite102project
-code for the elite 102 banking project
+
+Code for the Elite 102 Banking App Project
+
+NOTES:
+
+- If the code is run from main.py, all CLI functions should work as intended.
+- If the code is fun from userinterface.py, all functions should run when the buttons are clicked, but further interaction is done through the terminal through CLI.
+  - Functions also do not always work as intended, but functionality still exists.
